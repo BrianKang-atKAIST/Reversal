@@ -15,6 +15,9 @@ class Reversal:
     self.screen_width = self.blockpixel * 8
     self.screen_height = self.blockpixel * 8 + Info_height
     self.Info_height = Info_height
+    self.moves = 4
+    self.blackscore = 2
+    self.whitescore = 2
 
   def move(self, coord):
     if self.turn == 'BLACK':
@@ -29,237 +32,133 @@ class Reversal:
     x = temp_x = coord[0]
     y = temp_y = coord[1]
     to_reverse_set = set()
-    # 검은색 돌을 놨다면
+    # 위로 검사
+    while temp_y>0:
+      temp_y -= 1
+      if self.board[(x, temp_y)]//10==0:
+        break
+      elif self.board[(x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((x, temp_y))
+    # 아래로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while temp_y<7:
+      temp_y += 1
+      if self.board[(x, temp_y)]//10==0:
+        break
+      elif self.board[(x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((x, temp_y))
+    # 왼쪽으로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while temp_x>0:
+      temp_x -= 1
+      if self.board[(temp_x, y)]//10==0:
+        break
+      elif self.board[(temp_x, y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, y))
+    # 오른쪽으로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while temp_x<7:
+      temp_x += 1
+      if self.board[(temp_x, y)]//10==0:
+        break
+      elif self.board[(temp_x, y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, y))
+    # 왼쪽 위로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while min(temp_x, temp_y)>0:
+      temp_x -= 1
+      temp_y -= 1
+      if self.board[(temp_x, temp_y)]//10==0:
+        break
+      elif self.board[(temp_x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, temp_y))
+    # 오른쪽 위로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while temp_y>0 and temp_x<7:
+      temp_x += 1
+      temp_y -= 1
+      if self.board[(temp_x, temp_y)]//10==0:
+        break
+      elif self.board[(temp_x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, temp_y))
+    # 오른쪽 아래로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while max(temp_x, temp_y)<7:
+      temp_x += 1
+      temp_y += 1
+      if self.board[(temp_x, temp_y)]//10==0:
+        break
+      elif self.board[(temp_x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, temp_y))
+    # 왼쪽 아래로 검사
+    temp_x = x
+    temp_y = y
+    to_reverse_set = set()
+    while temp_y<7 and temp_x>0:
+      temp_x -= 1
+      temp_y += 1
+      if self.board[(temp_x, temp_y)]//10==0:
+        break
+      elif self.board[(temp_x, temp_y)]//10==stone_dict[self.turn]:
+        for blockcoord in to_reverse_set:
+          self.reverse_stone(blockcoord)
+        break
+      else:
+        to_reverse_set.add((temp_x, temp_y))
+
+    self.moves += 1
     if self.turn == 'BLACK':
-      # 위로 검사
-      while temp_y>0:
-        temp_y -= 1
-        if self.board[(x, temp_y)]//10==0:
-          break
-        elif self.board[(x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((x, temp_y))
-      # 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y<7:
-        temp_y += 1
-        if self.board[(x, temp_y)]//10==0:
-          break
-        elif self.board[(x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((x, temp_y))
-      # 왼쪽으로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_x>0:
-        temp_x -= 1
-        if self.board[(temp_x, y)]//10==0:
-          break
-        elif self.board[(temp_x, y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, y))
-      # 오른쪽으로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_x<7:
-        temp_x += 1
-        if self.board[(temp_x, y)]//10==0:
-          break
-        elif self.board[(temp_x, y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, y))
-      # 왼쪽 위로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while min(temp_x, temp_y)>0:
-        temp_x -= 1
-        temp_y -= 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 오른쪽 위로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y>0 and temp_x<7:
-        temp_x += 1
-        temp_y -= 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 오른쪽 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while max(temp_x, temp_y)<7:
-        temp_x += 1
-        temp_y += 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 왼쪽 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y<7 and temp_x>0:
-        temp_x -= 1
-        temp_y += 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==1:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 10
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-        
-    # 흰색 돌을 놨다면
+      self.blackscore += 1
     else:
-      # 위로 검사
-      while temp_y>0:
-        temp_y -= 1
-        if self.board[(x, temp_y)]//10==0:
-          break
-        elif self.board[(x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((x, temp_y))
-      # 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y<7:
-        temp_y += 1
-        if self.board[(x, temp_y)]//10==0:
-          break
-        elif self.board[(x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((x, temp_y))
-      # 왼쪽으로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_x>0:
-        temp_x -= 1
-        if self.board[(temp_x, y)]//10==0:
-          break
-        elif self.board[(temp_x, y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, y))
-      # 오른쪽으로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_x<7:
-        temp_x += 1
-        if self.board[(temp_x, y)]//10==0:
-          break
-        elif self.board[(temp_x, y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, y))
-      # 왼쪽 위로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while min(temp_x, temp_y)>0:
-        temp_x -= 1
-        temp_y -= 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 오른쪽 위로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y>0 and temp_x<7:
-        temp_x += 1
-        temp_y -= 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 오른쪽 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while max(temp_x, temp_y)<7:
-        temp_x += 1
-        temp_y += 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
-      # 왼쪽 아래로 검사
-      temp_x = x
-      temp_y = y
-      to_reverse_set = set()
-      while temp_y<7 and temp_x>0:
-        temp_x -= 1
-        temp_y += 1
-        if self.board[(temp_x, temp_y)]//10==0:
-          break
-        elif self.board[(temp_x, temp_y)]//10==2:
-          for blockcoord in to_reverse_set:
-            self.board[blockcoord] = self.board[blockcoord] % 10 + 20
-          break
-        else:
-          to_reverse_set.add((temp_x, temp_y))
+      self.whitescore += 1
+
+  def reverse_stone(self, coord):
+    if self.turn == 'BLACK':
+      self.board[coord] -= 10
+      self.blackscore += 1
+    else:
+      self.board[coord] += 10
+      self.whitescore += 1
 
   def turn_change(self):
     if self.turn == 'BLACK':
@@ -282,6 +181,7 @@ color_dict = {
   'BROWN': (153, 102, 000),
   'LT_BROWN': (204, 153, 102)
 }
+stone_dict = {'BLACK': 1, 'WHITE': 2}
 Info_height = 150
 origin = (0, Info_height)
 blockpixel = 80
